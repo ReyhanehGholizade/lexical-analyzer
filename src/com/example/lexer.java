@@ -30,7 +30,7 @@ public class lexer {
     }
 
 
-    // Read all text from a file into a String in Java
+    // Read all text from a file into a String
     public static String readFile(String path) throws IOException {
         StringBuilder sb = new StringBuilder();
         FileInputStream fileStream = new FileInputStream(new File(path));
