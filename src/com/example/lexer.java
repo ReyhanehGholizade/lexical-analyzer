@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class lexer {
 
@@ -24,11 +23,7 @@ public class lexer {
                     "double", "else", "enum", "extern", "float", "for",	"goto",	"if", "default",
                     "auto", "break", "case", "char", "do", "continue", "volatile"));
 
-//    HashMap<String, String> keywords = new HashMap<String, String>();
-
-    /**
-     * Constructor
-     */
+    // Constructor
     public lexer() {
         try {
             Code = readFile("input.txt");
@@ -37,45 +32,9 @@ public class lexer {
         }
         assert Code != null;
         currentCharacter = Code.charAt(0);
-
-//        keywords.put("keyword","int");
-//        keywords.put("keyword","char");
-//        keywords.put("keyword","float");
-//        keywords.put("keyword","auto");
-//        keywords.put("keyword","break");
-//        keywords.put("keyword","case");
-//        keywords.put("keyword","const");
-//        keywords.put("keyword","continue");
-//        keywords.put("keyword","default");
-//        keywords.put("keyword","do");
-//        keywords.put("keyword","double");
-//        keywords.put("keyword","else");
-//        keywords.put("keyword","enum");
-//        keywords.put("keyword","extern");
-//        keywords.put("keyword","for");
-//        keywords.put("keyword","long");
-//        keywords.put("keyword","if");
-//        keywords.put("keyword","goto");
-//        keywords.put("keyword","register");
-//        keywords.put("keyword","return");
-//        keywords.put("keyword","short");
-//        keywords.put("keyword","signed");
-//        keywords.put("keyword","sizeof");
-//        keywords.put("keyword","static");
-//        keywords.put("keyword","struct");
-//        keywords.put("keyword","switch");
-//        keywords.put("keyword","typedef");
-//        keywords.put("keyword","union");
-//        keywords.put("keyword","while");
-//        keywords.put("keyword","void");
-//        keywords.put("keyword","unsigned");
-//        keywords.put("keyword","volatile");
-
     }
 
-    /**
-     * Read all text from a file into a String
-     */
+    // Read all text from a file into a String
     public static String readFile(String path) throws IOException {
         StringBuilder sb = new StringBuilder();
         FileInputStream fileStream = new FileInputStream(new File(path));
@@ -89,18 +48,15 @@ public class lexer {
         return sb.toString();
     }
 
-    /**
-     * Peeks the next character
-     */
+
+    // Peeks the next character
     public char peekNextCharacter() {
         int index = Index;
         index++;
         return Code.charAt(index);
     }
 
-    /**
-     * Reads a number
-     */
+    // Reads a number
     public String readNumber() {
         StringBuilder number = new StringBuilder();
         number.append(currentCharacter);
@@ -115,9 +71,7 @@ public class lexer {
         return number.toString();
     }
 
-    /**
-     * Reads a word
-     */
+    // Reads a word
     public String readWord() {
         StringBuilder word = new StringBuilder();
         word.append(currentCharacter);
@@ -132,18 +86,20 @@ public class lexer {
         return word.toString();
     }
 
-    /**
-     * Checks if a character is number or not
-     */
+    // Checks if a character is number or not
     public boolean isNumber(int i) {
         return Code.charAt(i) >= '0' && Code.charAt(i) <= '9';
     }
 
-    /**
-     * Checks if a character is letter or not
-     */
+
+    // Checks if a character is letter or not
     public boolean isLetter(int i) {
         return (Code.charAt(i) >= 'a' && Code.charAt(i) <= 'z') || (Code.charAt(i) >= 'A' && Code.charAt(i) <= 'Z');
+    }
+
+    // Checks if a word is keyword or not
+    public boolean isKeyword(String word) {
+        return keywords.contains(word);
     }
 
     public void nextToken() {
@@ -151,6 +107,7 @@ public class lexer {
         while (i != Code.length()) {
             i++;
             switch (currentCharacter) {
+
                 case '+':
                     if (peekNextCharacter() == '+') {
                         new Token("++", "Increment Operator", currentRow, currentColumn,currentBlockNo);
@@ -236,7 +193,6 @@ public class lexer {
                     currentColumn++;
                     currentBlockNo--;
                     break;
-
 
                 case '*':
                     if (peekNextCharacter() == '=') {
@@ -403,6 +359,7 @@ public class lexer {
                     break;
 
                 default:
+
                     if (isNumber(Code.indexOf(currentCharacter))) {
                         int start = currentColumn;
                         String number = readNumber();
@@ -431,10 +388,6 @@ public class lexer {
 
             }
         }
-    }
-
-    public boolean isKeyword(String word) {
-        return keywords.contains(word);
     }
 
     public static void main(String[] args) {
