@@ -39,7 +39,6 @@ public class lexer {
         StringBuilder sb = new StringBuilder();
         FileInputStream fileStream = new FileInputStream(new File(path));
         BufferedReader br = new BufferedReader(new InputStreamReader(fileStream));
-
         String line;
         while ((line = br.readLine()) != null) {
             sb.append(line + System.lineSeparator());
@@ -47,7 +46,6 @@ public class lexer {
         System.out.println(sb.toString());
         return sb.toString();
     }
-
 
     // Peeks the next character
     public char peekNextCharacter() {
@@ -91,7 +89,6 @@ public class lexer {
         return Code.charAt(i) >= '0' && Code.charAt(i) <= '9';
     }
 
-
     // Checks if a character is letter or not
     public boolean isLetter(int i) {
         return (Code.charAt(i) >= 'a' && Code.charAt(i) <= 'z') || (Code.charAt(i) >= 'A' && Code.charAt(i) <= 'Z');
@@ -102,6 +99,7 @@ public class lexer {
         return keywords.contains(word);
     }
 
+    //finds the next token
     public void nextToken() {
         int i = 0;
         while (i != Code.length()) {
@@ -213,6 +211,14 @@ public class lexer {
                         Index+=2;
                         currentCharacter = Code.charAt(Index);
                         currentColumn+=2;
+                    } else if (peekNextCharacter() == '/') { //comment found so we skip this part
+                        currentCharacter = Code.charAt(++Index);
+                        currentColumn++;
+
+                        while (currentCharacter != '\r') {
+                            currentCharacter = Code.charAt(++Index);
+                            currentColumn++;
+                        }
                     } else {
                         new Token("/", "Arithmetic Operator", currentRow, currentColumn,currentBlockNo);
                         currentCharacter = Code.charAt(++Index);
@@ -285,6 +291,18 @@ public class lexer {
                     }
                     break;
 
+                //if a word starts with _
+                case '_':
+                    if (isLetter(Code.indexOf(peekNextCharacter())) || isNumber(Code.indexOf(peekNextCharacter()))) {
+                        int start = currentColumn;
+                        String word = readWord();
+                        new Token(word, "Identifier", currentRow, start,currentBlockNo);
+                        currentColumn = word.length() + currentColumn;
+                        Index+=word.length();
+                        currentCharacter = Code.charAt(Index);
+                    }
+                    break;
+
                 case '(':
                     new Token("(", "Bracket", currentRow, currentColumn,currentBlockNo);
                     currentCharacter = Code.charAt(++Index);
@@ -293,6 +311,18 @@ public class lexer {
 
                 case ')':
                     new Token(")", "Bracket", currentRow, currentColumn,currentBlockNo);
+                    currentCharacter = Code.charAt(++Index);
+                    currentColumn++;
+                    break;
+
+                case '[':
+                    new Token("[", "Bracket", currentRow, currentColumn,currentBlockNo);
+                    currentCharacter = Code.charAt(++Index);
+                    currentColumn++;
+                    break;
+
+                case ']':
+                    new Token("]", "Bracket", currentRow, currentColumn,currentBlockNo);
                     currentCharacter = Code.charAt(++Index);
                     currentColumn++;
                     break;
