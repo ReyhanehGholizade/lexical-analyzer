@@ -1,3 +1,3 @@
 # LexicalAnalyzer
 
-A Lexical-Analyzer Generator for C++ in Java
+A Lexical-Analyzer Generator for C in Java
